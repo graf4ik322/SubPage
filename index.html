@@ -475,10 +475,10 @@ class ResourceLoader {
             this.statusText.textContent = `Loading ${successful}/${this.total} resources`;
         } else if (failed > 0) {
             this.statusText.textContent = `Loaded with ${failed} error(s). Proceeding`;
-            setTimeout(() => this.startInitializationSequence(true), 800);
+            setTimeout(() => this.finishLoading(), 800);
         } else {
             this.statusText.textContent = 'All resources loaded. Initializing';
-            setTimeout(() => this.startInitializationSequence(false), 500);
+            setTimeout(() => this.finishLoading(), 500);
         }
     }
 
@@ -601,38 +601,7 @@ class ResourceLoader {
         });
     }
 
-    async startInitializationSequence(hasErrors = false) {
-        const messages = hasErrors ? [
-            'Proceeding with available resources',
-            'Checking system compatibility',
-            'Validating configuration',
-            'Initializing core modules',
-            'System ready with warnings'
-        ] : [
-            'Initialization complete',
-            'Loading system configuration',
-            'Preparing user interface',
-            'Establishing secure connections',
-            'System ready. Launching application'
-        ];
 
-        // Последовательно печатаем каждое сообщение
-        for (let i = 0; i < messages.length; i++) {
-            await this.typeText(this.statusText, messages[i], 50);
-            
-            // Добавляем точки для эффекта "обработки" (кроме последнего сообщения)
-            if (i < messages.length - 1) {
-                await this.addProcessingDots();
-                await new Promise(resolve => setTimeout(resolve, 600));
-            }
-        }
-
-        // Финальная пауза перед запуском
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        
-        // Запускаем финальную анимацию
-        this.finishLoading();
-    }
 
     async addProcessingDots() {
         const currentText = this.statusText.textContent;
@@ -662,7 +631,7 @@ class ResourceLoader {
     async startInitializationAnimation() {
         // Запоминаем время начала анимации
         const animationStartTime = Date.now();
-        const minAnimationTime = 3000; // Минимум 3 секунды
+        const minAnimationTime = 4000; // Минимум 4 секунды для интро
         
         // Определяем язык пользователя
         const userLang = navigator.language || navigator.userLanguage;
@@ -671,10 +640,14 @@ class ResourceLoader {
         const initMessages = isRussian ? [
             'Инициализация Eden Core VPN...',
             'Загрузка протоколов безопасности...',
+            'Установка зашифрованного туннеля...',
+            'Настройка сетевых интерфейсов...',
             'Система готова к работе!'
         ] : [
             'Initializing Eden Core VPN...',
             'Loading security protocols...',
+            'Establishing encrypted tunnel...',
+            'Configuring network interfaces...',
             'System initialization complete!'
         ];
 
@@ -686,22 +659,22 @@ class ResourceLoader {
         
         // Последовательно печатаем каждое сообщение инициализации
         for (let i = 0; i < initMessages.length; i++) {
-            await this.typeText(this.statusText, initMessages[i], 50);
+            await this.typeText(this.statusText, initMessages[i], 60);
             
             // Добавляем точки для эффекта "обработки" (кроме последнего сообщения)
             if (i < initMessages.length - 1) {
                 await this.addProcessingDots();
-                await new Promise(resolve => setTimeout(resolve, 400));
+                await new Promise(resolve => setTimeout(resolve, 600));
             }
         }
 
         // Финальная пауза перед запуском приложения
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        await new Promise(resolve => setTimeout(resolve, 1500));
         
         // Добавляем эффект мигания для последнего сообщения
         await this.addBlinkingEffect();
         
-        // Проверяем, прошло ли минимум 3 секунды
+        // Проверяем, прошло ли минимум 4 секунды
         const elapsedTime = Date.now() - animationStartTime;
         const remainingTime = Math.max(0, minAnimationTime - elapsedTime);
         
@@ -719,20 +692,20 @@ class ResourceLoader {
         const isRussian = userLang.startsWith('ru');
         const loadingText = isRussian ? 'Загрузка' : 'Loading';
         
-        for (let i = 0; i < 10; i++) {
+        for (let i = 0; i < 15; i++) {
             this.statusText.textContent = `${loadingText} ${loadingTexts[i % loadingTexts.length]}`;
-            await new Promise(resolve => setTimeout(resolve, 100));
+            await new Promise(resolve => setTimeout(resolve, 120));
         }
         this.statusText.textContent = '';
     }
 
     async addBlinkingEffect() {
         const currentText = this.statusText.textContent;
-        for (let i = 0; i < 4; i++) {
+        for (let i = 0; i < 6; i++) {
             this.statusText.textContent = currentText;
-            await new Promise(resolve => setTimeout(resolve, 300));
+            await new Promise(resolve => setTimeout(resolve, 400));
             this.statusText.textContent = '';
-            await new Promise(resolve => setTimeout(resolve, 150));
+            await new Promise(resolve => setTimeout(resolve, 200));
         }
         this.statusText.textContent = currentText;
     }
