@@ -475,10 +475,16 @@ class ResourceLoader {
             this.statusText.textContent = `Loading ${successful}/${this.total} resources`;
         } else if (failed > 0) {
             this.statusText.textContent = `Loaded with ${failed} error(s). Proceeding`;
-            setTimeout(() => this.finishLoading(), 800);
+            setTimeout(() => {
+                this.statusText.textContent = 'Proceeding with available resources';
+                setTimeout(() => this.finishLoading(), 1000);
+            }, 800);
         } else {
             this.statusText.textContent = 'All resources loaded. Initializing';
-            setTimeout(() => this.finishLoading(), 500);
+            setTimeout(() => {
+                this.statusText.textContent = 'Initialization complete';
+                setTimeout(() => this.finishLoading(), 1000);
+            }, 500);
         }
     }
 
@@ -582,29 +588,55 @@ class ResourceLoader {
         }
     }
 
-    finishLoading() {
-        document.fonts.ready.then(() => {
-            requestAnimationFrame(() => {
+    typeText(element, text, speed = 50) {
+        return new Promise(resolve => {
+            element.textContent = '';
+            let i = 0;
+            const timer = setInterval(() => {
+                element.textContent += text[i];
+                i++;
+                if (i >= text.length) {
+                    clearInterval(timer);
+                    resolve();
+                }
+            }, speed);
+        });
+    }
+
+    async finishLoading() {
+        // Показываем красивое завершение в терминале с эффектом печати
+        await this.typeText(this.statusText, 'System ready. Launching application...', 40);
+        
+        // Минимальная задержка 3 секунды для демонстрации терминала
+        const minDisplayTime = 3000;
+        const loadEndTime = Date.now();
+        const elapsedTime = loadEndTime - this.startTime;
+        const remainingTime = Math.max(0, minDisplayTime - elapsedTime);
+        
+        setTimeout(() => {
+            document.fonts.ready.then(() => {
                 requestAnimationFrame(() => {
-                    const preloader = document.getElementById('preloader');
-                    const content = document.getElementById('content');
-                    
-                    if (preloader) {
-                        preloader.style.transition = 'opacity 0.6s ease';
-                        preloader.style.opacity = '0';
-                    }
-                    
-                    setTimeout(() => {
-                        if (preloader) preloader.remove();
-                        if (content) {
-                            content.style.display = 'flex';
-                            content.style.opacity = '1';
+                    requestAnimationFrame(() => {
+                        const preloader = document.getElementById('preloader');
+                        const content = document.getElementById('content');
+                        
+                        if (preloader) {
+                            preloader.style.transition = 'opacity 0.8s ease';
+                            preloader.style.opacity = '0';
                         }
-                        document.body.style.overflow = 'auto';
-                    }, 600);
+                        
+                        setTimeout(() => {
+                            if (preloader) preloader.remove();
+                            if (content) {
+                                content.style.display = 'flex';
+                                content.style.opacity = '1';
+                            }
+                            document.body.style.overflow = 'auto';
+                        }, 800);
+                    });
                 });
             });
-        });
+        }, remainingTime);
     }
 }
 
