@@ -42,16 +42,16 @@
         gap: 2rem;
     }
     
-    .logo-container {
+        .logo-container {
         position: relative;
-        width: 120px;
-        height: 120px;
+        width: 80px;
+        height: 80px;
         display: flex;
         align-items: center;
         justify-content: center;
-        margin-bottom: 1rem;
+        margin-bottom: 2rem;
     }
-    
+
     .logo-aura {
         position: absolute;
         width: 100%;
@@ -63,262 +63,225 @@
             var(--glow) 20%,
             transparent 30%
         );
-        animation: rotate 2.4s var(--ease) infinite;
-        filter: blur(12px);
-        opacity: 0.7;
+        animation: rotate 3s var(--ease) infinite;
+        filter: blur(8px);
+        opacity: 0.5;
     }
-    
+
     .logo-wrapper {
         position: relative;
-        width: 60px;
-        height: 60px;
+        width: 50px;
+        height: 50px;
         z-index: 2;
         display: flex;
         align-items: center;
         justify-content: center;
     }
-    
+
     .logo-image {
         width: 100%;
         height: auto;
         max-height: 100%;
         object-fit: contain;
-        filter: drop-shadow(0 0 8px rgba(212, 175, 55, 0.3));
+        filter: drop-shadow(0 0 6px rgba(212, 175, 55, 0.4));
     }
 
-    /* Золотая консоль ресурсов */
+    /* Минималистичный терминал */
     .resources-console {
         width: 100%;
-        max-width: 450px;
-        background: linear-gradient(135deg, 
-            rgba(212, 175, 55, 0.15) 0%, 
-            rgba(255, 215, 0, 0.1) 50%, 
-            rgba(212, 175, 55, 0.15) 100%);
-        border-radius: 20px;
-        padding: 24px;
-        backdrop-filter: blur(15px);
-        border: 2px solid rgba(212, 175, 55, 0.3);
+        max-width: 500px;
+        background: #0a0a0a;
+        border-radius: 8px;
+        border: 2px solid var(--accent);
         box-shadow: 
-            0 8px 32px rgba(212, 175, 55, 0.2),
-            inset 0 1px 0 rgba(255, 255, 255, 0.1),
-            inset 0 -1px 0 rgba(0, 0, 0, 0.1);
+            0 0 20px rgba(212, 175, 55, 0.3),
+            inset 0 0 50px rgba(212, 175, 55, 0.05);
+        font-family: 'Courier New', 'Monaco', 'Menlo', monospace;
         position: relative;
         overflow: hidden;
     }
 
-    .resources-console::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: -100%;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(90deg, 
-            transparent, 
-            rgba(255, 215, 0, 0.1), 
-            transparent);
-        animation: shimmer 3s infinite;
-    }
-
-    .console-header {
+    /* Заголовок терминала */
+    .terminal-header {
+        background: linear-gradient(90deg, #1a1a1a, #2a2a2a, #1a1a1a);
+        border-bottom: 1px solid var(--accent);
+        padding: 8px 16px;
         display: flex;
         align-items: center;
-        justify-content: center;
         gap: 8px;
-        margin-bottom: 20px;
-        position: relative;
-        z-index: 1;
     }
 
-    .console-icon {
-        width: 16px;
-        height: 16px;
-        background: var(--accent);
+    .terminal-controls {
+        display: flex;
+        gap: 6px;
+    }
+
+    .terminal-control {
+        width: 12px;
+        height: 12px;
         border-radius: 50%;
-        animation: pulse 2s infinite;
-        box-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+        border: 1px solid var(--accent);
+        background: rgba(212, 175, 55, 0.1);
     }
 
-    .console-title {
+    .terminal-title {
         color: var(--accent);
-        font-size: 0.9rem;
-        font-weight: 600;
-        letter-spacing: 0.1em;
-        text-transform: uppercase;
-        text-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
+        font-size: 0.8rem;
+        margin-left: 12px;
+        opacity: 0.8;
+    }
+
+    /* Тело терминала */
+    .terminal-body {
+        padding: 16px;
+        min-height: 200px;
+    }
+
+    .terminal-prompt {
+        color: var(--accent);
+        font-size: 0.85rem;
+        margin-bottom: 12px;
+        opacity: 0.9;
+    }
+
+    .terminal-prompt::before {
+        content: "$ ";
+        color: var(--accent);
+        opacity: 0.7;
     }
 
     .resources-list {
         position: relative;
-        z-index: 1;
     }
 
     .resource-item {
         display: flex;
         align-items: center;
-        gap: 12px;
-        padding: 10px 16px;
-        margin: 6px 0;
-        color: rgba(255, 255, 255, 0.8);
-        font-size: 0.85rem;
-        transition: all 0.4s var(--ease);
-        border-radius: 12px;
-        background: rgba(0, 0, 0, 0.2);
-        border: 1px solid transparent;
-        font-family: 'Courier New', monospace;
-    }
-
-    .resource-item:hover {
-        background: rgba(212, 175, 55, 0.1);
-        border-color: rgba(212, 175, 55, 0.3);
-    }
-
-    .resource-icon {
-        width: 18px;
-        height: 18px;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex-shrink: 0;
-        transition: all 0.4s var(--ease);
-        font-size: 11px;
-        font-weight: bold;
-        border: 2px solid transparent;
-        position: relative;
-    }
-
-    .resource-icon::after {
-        content: '';
-        position: absolute;
-        inset: -2px;
-        border-radius: 50%;
-        background: conic-gradient(var(--accent), transparent, var(--accent));
-        opacity: 0;
+        padding: 4px 0;
+        font-size: 0.8rem;
+        line-height: 1.4;
         transition: opacity 0.3s ease;
     }
 
-    .resource-icon.pending {
-        background: rgba(255, 152, 0, 0.8);
-        color: #000;
-        animation: pulse 1.5s infinite;
-        box-shadow: 0 0 10px rgba(255, 152, 0, 0.4);
+    .resource-status {
+        color: #666;
+        width: 8px;
+        margin-right: 8px;
+        text-align: center;
     }
 
-    .resource-icon.loading {
-        background: var(--accent);
-        color: #000;
-        animation: spin 1s linear infinite;
-        box-shadow: 0 0 15px rgba(212, 175, 55, 0.6);
+    .resource-status.pending {
+        color: #888;
+        animation: terminalBlink 1s infinite;
     }
 
-    .resource-icon.loading::after {
-        opacity: 1;
-        animation: spin 1s linear infinite reverse;
+    .resource-status.loading {
+        color: var(--accent);
+        animation: terminalSpin 0.8s linear infinite;
     }
 
-    .resource-icon.success {
-        background: linear-gradient(135deg, #4caf50, #45a049);
-        color: white;
-        box-shadow: 0 0 15px rgba(76, 175, 80, 0.5);
-        transform: scale(1.1);
+    .resource-status.success {
+        color: #00ff41;
     }
 
-    .resource-icon.error {
-        background: linear-gradient(135deg, #f44336, #d32f2f);
-        color: white;
-        animation: shake 0.5s ease-in-out;
-        box-shadow: 0 0 15px rgba(244, 67, 54, 0.5);
+    .resource-status.error {
+        color: #ff0040;
     }
 
-    .resource-icon.timeout {
-        background: linear-gradient(135deg, #9c27b0, #7b1fa2);
-        color: white;
-        animation: flash 1s infinite;
-        box-shadow: 0 0 15px rgba(156, 39, 176, 0.5);
+    .resource-status.timeout {
+        color: #ff8c00;
     }
 
     .resource-name {
+        color: rgba(212, 175, 55, 0.8);
         flex: 1;
-        transition: all 0.3s ease;
-        font-weight: 500;
+        margin-right: 8px;
     }
 
     .resource-item.success .resource-name {
-        color: rgba(255, 255, 255, 0.95);
-        text-shadow: 0 0 5px rgba(76, 175, 80, 0.3);
+        color: rgba(212, 175, 55, 0.95);
     }
 
     .resource-item.error .resource-name {
-        color: rgba(244, 67, 54, 0.9);
-        text-shadow: 0 0 5px rgba(244, 67, 54, 0.3);
+        color: rgba(255, 0, 64, 0.8);
     }
 
     .resource-item.loading .resource-name {
         color: var(--accent);
-        text-shadow: 0 0 5px rgba(212, 175, 55, 0.3);
     }
 
     .resource-time {
+        color: #666;
         font-size: 0.75rem;
-        color: rgba(255, 255, 255, 0.6);
         min-width: 50px;
         text-align: right;
-        font-family: 'Courier New', monospace;
-        padding: 2px 6px;
-        background: rgba(0, 0, 0, 0.3);
-        border-radius: 6px;
-        border: 1px solid rgba(255, 255, 255, 0.1);
+        opacity: 0.7;
     }
 
-    .overall-progress {
-        width: 100%;
-        height: 4px;
-        background: rgba(0, 0, 0, 0.4);
-        border-radius: 2px;
-        margin: 20px 0 16px 0;
-        overflow: hidden;
-        position: relative;
-        border: 1px solid rgba(212, 175, 55, 0.2);
-    }
-
-    .progress-bar {
-        height: 100%;
-        background: linear-gradient(90deg, 
-            var(--accent) 0%, 
-            #ffd700 50%, 
-            var(--accent) 100%);
-        width: 0%;
-        transition: width 0.5s var(--ease);
-        border-radius: 2px;
-        position: relative;
-        box-shadow: 0 0 10px rgba(212, 175, 55, 0.6);
-    }
-
-    .progress-bar::after {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: -100%;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(90deg, 
-            transparent, 
-            rgba(255, 255, 255, 0.4), 
-            transparent);
-        animation: progressShimmer 2s infinite;
-    }
-
-    .console-status {
+    /* Прогресс в стиле терминала */
+    .terminal-progress {
+        margin: 16px 0 12px 0;
+        color: rgba(212, 175, 55, 0.8);
         font-size: 0.8rem;
-        letter-spacing: 0.1em;
-        text-transform: uppercase;
+    }
+
+    .progress-bar-container {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-top: 4px;
+    }
+
+    .progress-bracket {
         color: var(--accent);
-        font-weight: 500;
-        text-align: center;
-        text-shadow: 0 0 8px rgba(212, 175, 55, 0.4);
+        opacity: 0.7;
+    }
+
+    .progress-bar-terminal {
+        flex: 1;
+        height: 1px;
+        background: #333;
+        border-radius: 0;
         position: relative;
-        z-index: 1;
+        overflow: hidden;
+    }
+
+    .progress-fill {
+        height: 100%;
+        background: var(--accent);
+        width: 0%;
+        transition: width 0.3s ease;
+        position: relative;
+    }
+
+    .progress-percentage {
+        color: var(--accent);
+        font-size: 0.75rem;
+        min-width: 35px;
+        text-align: right;
+        opacity: 0.8;
+    }
+
+    /* Статус терминала */
+    .terminal-status {
+        color: rgba(212, 175, 55, 0.7);
+        font-size: 0.75rem;
+        margin-top: 8px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .status-cursor {
+        color: var(--accent);
+        animation: terminalBlink 1s infinite;
+    }
+
+    /* Курсор в конце */
+    .terminal-cursor {
+        color: var(--accent);
+        animation: terminalBlink 1.2s infinite;
+        margin-left: 4px;
     }
 
     @keyframes rotate {
@@ -336,26 +299,17 @@
         100% { transform: rotate(360deg); }
     }
 
-    @keyframes shimmer {
-        0% { left: -100%; }
-        50% { left: 100%; }
-        100% { left: 100%; }
+    @keyframes terminalBlink {
+        0%, 50% { opacity: 1; }
+        51%, 100% { opacity: 0.3; }
     }
 
-    @keyframes progressShimmer {
-        0% { left: -100%; }
-        100% { left: 100%; }
-    }
-
-    @keyframes shake {
-        0%, 100% { transform: translateX(0); }
-        25% { transform: translateX(-2px); }
-        75% { transform: translateX(2px); }
-    }
-
-    @keyframes flash {
-        0%, 100% { opacity: 1; }
-        50% { opacity: 0.5; }
+    @keyframes terminalSpin {
+        0% { content: '|'; }
+        25% { content: '/'; }
+        50% { content: '-'; }
+        75% { content: '\\'; }
+        100% { content: '|'; }
     }
 
     /* Content styles */
@@ -411,20 +365,37 @@ class ResourceLoader {
         const preloader = document.getElementById('preloader');
         if (!preloader) return;
 
-        // Создаем золотую консоль
+        // Создаем терминал
         const resourcesConsole = document.createElement('div');
         resourcesConsole.className = 'resources-console';
         resourcesConsole.innerHTML = `
-            <div class="console-header">
-                <div class="console-icon"></div>
-                <div class="console-title">System Resources</div>
-                <div class="console-icon"></div>
+            <div class="terminal-header">
+                <div class="terminal-controls">
+                    <div class="terminal-control"></div>
+                    <div class="terminal-control"></div>
+                    <div class="terminal-control"></div>
+                </div>
+                <div class="terminal-title">resource_loader.sh</div>
             </div>
-            <div class="resources-list"></div>
-            <div class="overall-progress">
-                <div class="progress-bar"></div>
+            <div class="terminal-body">
+                <div class="terminal-prompt">Initializing resource loader...</div>
+                <div class="resources-list"></div>
+                <div class="terminal-progress">
+                    <div class="progress-bar-container">
+                        <span class="progress-bracket">[</span>
+                        <div class="progress-bar-terminal">
+                            <div class="progress-fill"></div>
+                        </div>
+                        <span class="progress-bracket">]</span>
+                        <span class="progress-percentage">0%</span>
+                    </div>
+                </div>
+                <div class="terminal-status">
+                    <span>Status:</span>
+                    <span class="status-text">Establishing secure connection</span>
+                    <span class="status-cursor">█</span>
+                </div>
             </div>
-            <div class="console-status">Establishing secure connection...</div>
         `;
 
         const resourcesList = resourcesConsole.querySelector('.resources-list');
@@ -435,7 +406,7 @@ class ResourceLoader {
             item.setAttribute('data-index', index);
             
             item.innerHTML = `
-                <div class="resource-icon pending">⦿</div>
+                <div class="resource-status pending">•</div>
                 <div class="resource-name">${resource.name}</div>
                 <div class="resource-time">--</div>
             `;
@@ -443,39 +414,40 @@ class ResourceLoader {
             resourcesList.appendChild(item);
         });
 
-        // Добавляем консоль в preloader
+        // Добавляем терминал в preloader
         preloader.appendChild(resourcesConsole);
         
         this.resourcesConsole = resourcesConsole;
         this.resourcesList = resourcesList;
-        this.progressBar = resourcesConsole.querySelector('.progress-bar');
-        this.statusText = resourcesConsole.querySelector('.console-status');
+        this.progressBar = resourcesConsole.querySelector('.progress-fill');
+        this.progressPercentage = resourcesConsole.querySelector('.progress-percentage');
+        this.statusText = resourcesConsole.querySelector('.status-text');
     }
 
     updateResourceStatus(index, status, time = null) {
         const item = this.resourcesList.querySelector(`[data-index="${index}"]`);
         if (!item) return;
 
-        const icon = item.querySelector('.resource-icon');
+        const statusIcon = item.querySelector('.resource-status');
         const timeEl = item.querySelector('.resource-time');
         
-        icon.className = `resource-icon ${status}`;
+        statusIcon.className = `resource-status ${status}`;
         item.className = `resource-item ${status}`;
         
         switch(status) {
             case 'loading':
-                icon.textContent = '⟳';
+                statusIcon.textContent = '|';
                 break;
             case 'success':
-                icon.textContent = '✓';
+                statusIcon.textContent = '✓';
                 this.completed++;
                 break;
             case 'error':
-                icon.textContent = '✗';
+                statusIcon.textContent = '✗';
                 this.completed++;
                 break;
             case 'timeout':
-                icon.textContent = '⧖';
+                statusIcon.textContent = '⚠';
                 this.completed++;
                 break;
         }
@@ -490,8 +462,9 @@ class ResourceLoader {
     updateProgress() {
         const progress = (this.completed / this.total) * 100;
         this.progressBar.style.width = progress + '%';
+        this.progressPercentage.textContent = Math.round(progress) + '%';
         
-        // Обновляем статус консоли
+        // Обновляем статус терминала
         const successful = this.resources.filter((_, i) => 
             this.resourcesList.querySelector(`[data-index="${i}"]`)?.classList.contains('success')).length;
         const failed = this.resources.filter((_, i) => 
@@ -499,12 +472,12 @@ class ResourceLoader {
             this.resourcesList.querySelector(`[data-index="${i}"]`)?.classList.contains('timeout')).length;
             
         if (this.completed < this.total) {
-            this.statusText.textContent = `Loading resources... ${successful}/${this.total} ready`;
+            this.statusText.textContent = `Loading ${successful}/${this.total} resources`;
         } else if (failed > 0) {
-            this.statusText.textContent = `Resources loaded with ${failed} error(s). Proceeding...`;
+            this.statusText.textContent = `Loaded with ${failed} error(s). Proceeding`;
             setTimeout(() => this.finishLoading(), 800);
         } else {
-            this.statusText.textContent = 'All resources loaded successfully. Initializing...';
+            this.statusText.textContent = 'All resources loaded. Initializing';
             setTimeout(() => this.finishLoading(), 500);
         }
     }
