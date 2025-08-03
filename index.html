@@ -587,11 +587,15 @@ class ResourceLoader {
             element.textContent = '';
             let i = 0;
             const timer = setInterval(() => {
-                element.textContent += text[i];
+                element.textContent = text.substring(0, i + 1) + '█';
                 i++;
                 if (i >= text.length) {
                     clearInterval(timer);
-                    resolve();
+                    // Убираем курсор после завершения печати
+                    setTimeout(() => {
+                        element.textContent = text;
+                        resolve();
+                    }, 200);
                 }
             }, speed);
         });
@@ -636,12 +640,17 @@ class ResourceLoader {
         
         for (let i = 0; i < dots.length; i++) {
             this.statusText.textContent = currentText + dots[i];
-            await new Promise(resolve => setTimeout(resolve, 300));
+            await new Promise(resolve => setTimeout(resolve, 250));
         }
         
-        // Убираем точки
+        // Убираем точки с эффектом затухания
+        for (let i = dots.length - 1; i >= 0; i--) {
+            this.statusText.textContent = currentText + dots[i];
+            await new Promise(resolve => setTimeout(resolve, 150));
+        }
+        
         this.statusText.textContent = currentText;
-        await new Promise(resolve => setTimeout(resolve, 200));
+        await new Promise(resolve => setTimeout(resolve, 300));
     }
 
     finishLoading() {
@@ -652,29 +661,106 @@ class ResourceLoader {
         const remainingTime = Math.max(0, minDisplayTime - elapsedTime);
         
         setTimeout(() => {
-            document.fonts.ready.then(() => {
+            // Запускаем 3-секундную анимацию инициализации
+            this.startInitializationAnimation();
+        }, remainingTime);
+    }
+
+    async startInitializationAnimation() {
+        // Определяем язык пользователя
+        const userLang = navigator.language || navigator.userLanguage;
+        const isRussian = userLang.startsWith('ru');
+        
+        const initMessages = isRussian ? [
+            'Инициализация Eden Core VPN...',
+            'Загрузка протоколов безопасности...',
+            'Установка зашифрованного туннеля...',
+            'Настройка сетевых интерфейсов...',
+            'Запуск VPN сервисов...',
+            'Система готова к работе!'
+        ] : [
+            'Initializing Eden Core VPN...',
+            'Loading security protocols...',
+            'Establishing encrypted tunnel...',
+            'Configuring network interfaces...',
+            'Starting VPN services...',
+            'System initialization complete!'
+        ];
+
+        // Очищаем терминал и начинаем новую анимацию
+        this.statusText.textContent = '';
+        
+        // Добавляем эффект "загрузки" перед началом
+        await this.addLoadingEffect();
+        
+        // Последовательно печатаем каждое сообщение инициализации
+        for (let i = 0; i < initMessages.length; i++) {
+            await this.typeText(this.statusText, initMessages[i], 70);
+            
+            // Добавляем точки для эффекта "обработки" (кроме последнего сообщения)
+            if (i < initMessages.length - 1) {
+                await this.addProcessingDots();
+                await new Promise(resolve => setTimeout(resolve, 900));
+            }
+        }
+
+        // Финальная пауза перед запуском приложения
+        await new Promise(resolve => setTimeout(resolve, 2000));
+        
+        // Добавляем эффект мигания для последнего сообщения
+        await this.addBlinkingEffect();
+        
+        // Запускаем финальную анимацию перехода
+        this.startFinalTransition();
+    }
+
+    async addLoadingEffect() {
+        const loadingTexts = ['⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏'];
+        const userLang = navigator.language || navigator.userLanguage;
+        const isRussian = userLang.startsWith('ru');
+        const loadingText = isRussian ? 'Загрузка' : 'Loading';
+        
+        for (let i = 0; i < 20; i++) {
+            this.statusText.textContent = `${loadingText} ${loadingTexts[i % loadingTexts.length]}`;
+            await new Promise(resolve => setTimeout(resolve, 120));
+        }
+        this.statusText.textContent = '';
+    }
+
+    async addBlinkingEffect() {
+        const currentText = this.statusText.textContent;
+        for (let i = 0; i < 6; i++) {
+            this.statusText.textContent = currentText;
+            await new Promise(resolve => setTimeout(resolve, 400));
+            this.statusText.textContent = '';
+            await new Promise(resolve => setTimeout(resolve, 200));
+        }
+        this.statusText.textContent = currentText;
+    }
+
+    startFinalTransition() {
+        document.fonts.ready.then(() => {
+            requestAnimationFrame(() => {
                 requestAnimationFrame(() => {
-                    requestAnimationFrame(() => {
-                        const preloader = document.getElementById('preloader');
-                        const content = document.getElementById('content');
-                        
-                        if (preloader) {
-                            preloader.style.transition = 'opacity 1s ease';
-                            preloader.style.opacity = '0';
+                    const preloader = document.getElementById('preloader');
+                    const content = document.getElementById('content');
+                    
+                    if (preloader) {
+                        preloader.style.transition = 'opacity 1s ease';
+                        preloader.style.opacity = '0';
+                    }
+                    
+                    setTimeout(() => {
+                        if (preloader) preloader.remove();
+                        if (content) {
+                            content.style.display = 'flex';
+                            content.style.opacity = '1';
                         }
-                        
-                        setTimeout(() => {
-                            if (preloader) preloader.remove();
-                            if (content) {
-                                content.style.display = 'flex';
-                                content.style.opacity = '1';
-                            }
-                            document.body.style.overflow = 'auto';
-                        }, 1000);
-                    });
+                        document.body.style.overflow = 'auto';
+                    }, 1000);
                 });
             });
-        }, remainingTime);
+        });
     }
 }
 
