@@ -609,17 +609,17 @@ class ResourceLoader {
         
         for (let i = 0; i < dots.length; i++) {
             this.statusText.textContent = currentText + dots[i];
-            await new Promise(resolve => setTimeout(resolve, 250));
+            await new Promise(resolve => setTimeout(resolve, 125));
         }
         
         // Убираем точки с эффектом затухания
         for (let i = dots.length - 1; i >= 0; i--) {
             this.statusText.textContent = currentText + dots[i];
-            await new Promise(resolve => setTimeout(resolve, 150));
+            await new Promise(resolve => setTimeout(resolve, 75));
         }
         
         this.statusText.textContent = currentText;
-        await new Promise(resolve => setTimeout(resolve, 300));
+        await new Promise(resolve => setTimeout(resolve, 150));
     }
 
     finishLoading() {
@@ -631,7 +631,7 @@ class ResourceLoader {
     async startInitializationAnimation() {
         // Запоминаем время начала анимации
         const animationStartTime = Date.now();
-        const minAnimationTime = 4000; // Минимум 4 секунды для интро
+        const minAnimationTime = 2000; // Минимум 2 секунды для интро
         
         // Определяем язык пользователя
         const userLang = navigator.language || navigator.userLanguage;
@@ -659,17 +659,17 @@ class ResourceLoader {
         
         // Последовательно печатаем каждое сообщение инициализации
         for (let i = 0; i < initMessages.length; i++) {
-            await this.typeText(this.statusText, initMessages[i], 30);
+            await this.typeText(this.statusText, initMessages[i], 15);
             
             // Добавляем точки для эффекта "обработки" (кроме последнего сообщения)
             if (i < initMessages.length - 1) {
                 await this.addProcessingDots();
-                await new Promise(resolve => setTimeout(resolve, 400));
+                await new Promise(resolve => setTimeout(resolve, 200));
             }
         }
 
         // Финальная пауза перед запуском приложения
-        await new Promise(resolve => setTimeout(resolve, 1500));
+        await new Promise(resolve => setTimeout(resolve, 750));
         
         // Добавляем эффект мигания для последнего сообщения
         await this.addBlinkingEffect();
@@ -694,7 +694,7 @@ class ResourceLoader {
         
         for (let i = 0; i < 15; i++) {
             this.statusText.textContent = `${loadingText} ${loadingTexts[i % loadingTexts.length]}`;
-            await new Promise(resolve => setTimeout(resolve, 120));
+            await new Promise(resolve => setTimeout(resolve, 60));
         }
         this.statusText.textContent = '';
     }
@@ -703,9 +703,9 @@ class ResourceLoader {
         const currentText = this.statusText.textContent;
         for (let i = 0; i < 3; i++) {
             this.statusText.textContent = currentText;
-            await new Promise(resolve => setTimeout(resolve, 400));
-            this.statusText.textContent = '';
             await new Promise(resolve => setTimeout(resolve, 200));
+            this.statusText.textContent = '';
+            await new Promise(resolve => setTimeout(resolve, 100));
         }
         this.statusText.textContent = currentText;
     }
