@@ -3864,38 +3864,5 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 </script>
     <!-- Emoji polyfill moved to ResourceLoader class -->
-    <script>
-    window.addEventListener('load', () => {
-      // 1) Ждём загрузки всех web-шрифтов (иконок тоже)
-      document.fonts.ready.then(() => {
-        // 2) Повторно применяем переводы, если функция есть
-        if (typeof applyTranslations === 'function') {
-          applyTranslations();
-        }
-        // 3) Два rAF для финального рендера
-        requestAnimationFrame(() => {
-          requestAnimationFrame(() => {
-            const pre = document.getElementById('preloader');
-            const content = document.getElementById('content');
-            if (pre) {
-              pre.style.transition = 'opacity 0.6s ease';
-              pre.style.opacity = '0';
-            }
-            // 4) Через 600 мс удаляем прелоадер и показываем контент
-            setTimeout(() => {
-              if (pre) pre.remove();
-              if (content) {
-                content.style.display = 'flex';             // или block
-                content.style.transition = 'opacity 0.4s ease';
-                content.style.opacity = '1';
-              }
-              // 5) Возвращаем прокрутку страницы
-              document.body.style.overflow = 'auto';
-            }, 600);
-          });
-        });
-      });
-    });
-  </script>
 </body>
 </html>
