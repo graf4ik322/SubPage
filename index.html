@@ -475,16 +475,10 @@ class ResourceLoader {
             this.statusText.textContent = `Loading ${successful}/${this.total} resources`;
         } else if (failed > 0) {
             this.statusText.textContent = `Loaded with ${failed} error(s). Proceeding`;
-            setTimeout(() => {
-                this.statusText.textContent = 'Proceeding with available resources';
-                setTimeout(() => this.finishLoading(), 1000);
-            }, 800);
+            setTimeout(() => this.startInitializationSequence(true), 800);
         } else {
             this.statusText.textContent = 'All resources loaded. Initializing';
-            setTimeout(() => {
-                this.statusText.textContent = 'Initialization complete';
-                setTimeout(() => this.finishLoading(), 1000);
-            }, 500);
+            setTimeout(() => this.startInitializationSequence(false), 500);
         }
     }
 
@@ -603,10 +597,54 @@ class ResourceLoader {
         });
     }
 
-    async finishLoading() {
-        // Показываем красивое завершение в терминале с эффектом печати
-        await this.typeText(this.statusText, 'System ready. Launching application...', 40);
+    async startInitializationSequence(hasErrors = false) {
+        const messages = hasErrors ? [
+            'Proceeding with available resources',
+            'Checking system compatibility',
+            'Validating configuration',
+            'Initializing core modules',
+            'System ready with warnings'
+        ] : [
+            'Initialization complete',
+            'Loading system configuration',
+            'Preparing user interface',
+            'Establishing secure connections',
+            'System ready. Launching application'
+        ];
+
+        // Последовательно печатаем каждое сообщение
+        for (let i = 0; i < messages.length; i++) {
+            await this.typeText(this.statusText, messages[i], 50);
+            
+            // Добавляем точки для эффекта "обработки" (кроме последнего сообщения)
+            if (i < messages.length - 1) {
+                await this.addProcessingDots();
+                await new Promise(resolve => setTimeout(resolve, 600));
+            }
+        }
+
+        // Финальная пауза перед запуском
+        await new Promise(resolve => setTimeout(resolve, 1000));
         
+        // Запускаем финальную анимацию
+        this.finishLoading();
+    }
+
+    async addProcessingDots() {
+        const currentText = this.statusText.textContent;
+        const dots = ['', '.', '..', '...'];
+        
+        for (let i = 0; i < dots.length; i++) {
+            this.statusText.textContent = currentText + dots[i];
+            await new Promise(resolve => setTimeout(resolve, 300));
+        }
+        
+        // Убираем точки
+        this.statusText.textContent = currentText;
+        await new Promise(resolve => setTimeout(resolve, 200));
+    }
+
+    finishLoading() {
         // Минимальная задержка 3 секунды для демонстрации терминала
         const minDisplayTime = 3000;
         const loadEndTime = Date.now();
@@ -621,7 +659,7 @@ class ResourceLoader {
                         const content = document.getElementById('content');
                         
                         if (preloader) {
-                            preloader.style.transition = 'opacity 0.8s ease';
+                            preloader.style.transition = 'opacity 1s ease';
                             preloader.style.opacity = '0';
                         }
                         
@@ -632,7 +670,7 @@ class ResourceLoader {
                                 content.style.opacity = '1';
                             }
                             document.body.style.overflow = 'auto';
-                        }, 800);
+                        }, 1000);
                     });
                 });
             });
