@@ -729,6 +729,9 @@ class ResourceLoader {
                             content.style.opacity = '1';
                         }
                         document.body.style.overflow = 'auto';
+                        
+                        // Загружаем данные подписки только после показа контента
+                        loadSubscriptionData();
                     }, 1000);
                 });
             });
@@ -3843,8 +3846,6 @@ document.addEventListener('DOMContentLoaded', () => {
         loadAppsConfig().then(() => {
             console.log('Apps config preloaded');
         });
-        
-        loadSubscriptionData();
         
         const settingsButton = document.getElementById('settings-button');
         if (settingsButton) {
