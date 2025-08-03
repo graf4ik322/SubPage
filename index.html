@@ -86,119 +86,239 @@
         filter: drop-shadow(0 0 8px rgba(212, 175, 55, 0.3));
     }
 
-    /* Список ресурсов */
-    .resources-list {
+    /* Золотая консоль ресурсов */
+    .resources-console {
         width: 100%;
-        max-width: 400px;
-        background: rgba(255, 255, 255, 0.05);
-        border-radius: 16px;
+        max-width: 450px;
+        background: linear-gradient(135deg, 
+            rgba(212, 175, 55, 0.15) 0%, 
+            rgba(255, 215, 0, 0.1) 50%, 
+            rgba(212, 175, 55, 0.15) 100%);
+        border-radius: 20px;
         padding: 24px;
-        backdrop-filter: blur(10px);
-        border: 1px solid rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(15px);
+        border: 2px solid rgba(212, 175, 55, 0.3);
+        box-shadow: 
+            0 8px 32px rgba(212, 175, 55, 0.2),
+            inset 0 1px 0 rgba(255, 255, 255, 0.1),
+            inset 0 -1px 0 rgba(0, 0, 0, 0.1);
+        position: relative;
+        overflow: hidden;
     }
 
-    .resources-title {
-        color: rgba(255, 255, 255, 0.9);
+    .resources-console::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, 
+            transparent, 
+            rgba(255, 215, 0, 0.1), 
+            transparent);
+        animation: shimmer 3s infinite;
+    }
+
+    .console-header {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        margin-bottom: 20px;
+        position: relative;
+        z-index: 1;
+    }
+
+    .console-icon {
+        width: 16px;
+        height: 16px;
+        background: var(--accent);
+        border-radius: 50%;
+        animation: pulse 2s infinite;
+        box-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+    }
+
+    .console-title {
+        color: var(--accent);
         font-size: 0.9rem;
-        font-weight: 500;
-        margin-bottom: 16px;
-        text-align: center;
-        letter-spacing: 0.05em;
+        font-weight: 600;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        text-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
+    }
+
+    .resources-list {
+        position: relative;
+        z-index: 1;
     }
 
     .resource-item {
         display: flex;
         align-items: center;
         gap: 12px;
-        padding: 8px 0;
-        color: rgba(255, 255, 255, 0.7);
+        padding: 10px 16px;
+        margin: 6px 0;
+        color: rgba(255, 255, 255, 0.8);
         font-size: 0.85rem;
-        transition: all 0.3s ease;
+        transition: all 0.4s var(--ease);
+        border-radius: 12px;
+        background: rgba(0, 0, 0, 0.2);
+        border: 1px solid transparent;
+        font-family: 'Courier New', monospace;
+    }
+
+    .resource-item:hover {
+        background: rgba(212, 175, 55, 0.1);
+        border-color: rgba(212, 175, 55, 0.3);
     }
 
     .resource-icon {
-        width: 16px;
-        height: 16px;
+        width: 18px;
+        height: 18px;
         border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
         flex-shrink: 0;
-        transition: all 0.3s ease;
-        font-size: 10px;
+        transition: all 0.4s var(--ease);
+        font-size: 11px;
         font-weight: bold;
+        border: 2px solid transparent;
+        position: relative;
+    }
+
+    .resource-icon::after {
+        content: '';
+        position: absolute;
+        inset: -2px;
+        border-radius: 50%;
+        background: conic-gradient(var(--accent), transparent, var(--accent));
+        opacity: 0;
+        transition: opacity 0.3s ease;
     }
 
     .resource-icon.pending {
-        background: var(--pending-color);
+        background: rgba(255, 152, 0, 0.8);
+        color: #000;
         animation: pulse 1.5s infinite;
+        box-shadow: 0 0 10px rgba(255, 152, 0, 0.4);
     }
 
     .resource-icon.loading {
         background: var(--accent);
+        color: #000;
         animation: spin 1s linear infinite;
+        box-shadow: 0 0 15px rgba(212, 175, 55, 0.6);
+    }
+
+    .resource-icon.loading::after {
+        opacity: 1;
+        animation: spin 1s linear infinite reverse;
     }
 
     .resource-icon.success {
-        background: var(--success-color);
+        background: linear-gradient(135deg, #4caf50, #45a049);
         color: white;
+        box-shadow: 0 0 15px rgba(76, 175, 80, 0.5);
+        transform: scale(1.1);
     }
 
     .resource-icon.error {
-        background: var(--error-color);
+        background: linear-gradient(135deg, #f44336, #d32f2f);
         color: white;
+        animation: shake 0.5s ease-in-out;
+        box-shadow: 0 0 15px rgba(244, 67, 54, 0.5);
     }
 
     .resource-icon.timeout {
-        background: var(--timeout-color);
+        background: linear-gradient(135deg, #9c27b0, #7b1fa2);
         color: white;
+        animation: flash 1s infinite;
+        box-shadow: 0 0 15px rgba(156, 39, 176, 0.5);
     }
 
     .resource-name {
         flex: 1;
-        transition: color 0.3s ease;
+        transition: all 0.3s ease;
+        font-weight: 500;
     }
 
     .resource-item.success .resource-name {
-        color: rgba(255, 255, 255, 0.9);
+        color: rgba(255, 255, 255, 0.95);
+        text-shadow: 0 0 5px rgba(76, 175, 80, 0.3);
     }
 
     .resource-item.error .resource-name {
-        color: rgba(244, 67, 54, 0.8);
+        color: rgba(244, 67, 54, 0.9);
+        text-shadow: 0 0 5px rgba(244, 67, 54, 0.3);
+    }
+
+    .resource-item.loading .resource-name {
+        color: var(--accent);
+        text-shadow: 0 0 5px rgba(212, 175, 55, 0.3);
     }
 
     .resource-time {
         font-size: 0.75rem;
-        color: rgba(255, 255, 255, 0.5);
-        min-width: 40px;
+        color: rgba(255, 255, 255, 0.6);
+        min-width: 50px;
         text-align: right;
+        font-family: 'Courier New', monospace;
+        padding: 2px 6px;
+        background: rgba(0, 0, 0, 0.3);
+        border-radius: 6px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
     }
 
     .overall-progress {
         width: 100%;
-        height: 2px;
-        background: rgba(255, 255, 255, 0.1);
-        border-radius: 1px;
-        margin-top: 16px;
+        height: 4px;
+        background: rgba(0, 0, 0, 0.4);
+        border-radius: 2px;
+        margin: 20px 0 16px 0;
         overflow: hidden;
+        position: relative;
+        border: 1px solid rgba(212, 175, 55, 0.2);
     }
 
     .progress-bar {
         height: 100%;
-        background: linear-gradient(90deg, var(--accent), var(--success-color));
+        background: linear-gradient(90deg, 
+            var(--accent) 0%, 
+            #ffd700 50%, 
+            var(--accent) 100%);
         width: 0%;
-        transition: width 0.3s ease;
-        border-radius: 1px;
+        transition: width 0.5s var(--ease);
+        border-radius: 2px;
+        position: relative;
+        box-shadow: 0 0 10px rgba(212, 175, 55, 0.6);
     }
 
-    .status-text {
+    .progress-bar::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, 
+            transparent, 
+            rgba(255, 255, 255, 0.4), 
+            transparent);
+        animation: progressShimmer 2s infinite;
+    }
+
+    .console-status {
         font-size: 0.8rem;
         letter-spacing: 0.1em;
         text-transform: uppercase;
-        color: rgba(255, 255, 255, 0.6);
-        font-weight: 300;
+        color: var(--accent);
+        font-weight: 500;
         text-align: center;
-        margin-top: 12px;
+        text-shadow: 0 0 8px rgba(212, 175, 55, 0.4);
+        position: relative;
+        z-index: 1;
     }
 
     @keyframes rotate {
@@ -214,6 +334,28 @@
     @keyframes spin {
         0% { transform: rotate(0deg); }
         100% { transform: rotate(360deg); }
+    }
+
+    @keyframes shimmer {
+        0% { left: -100%; }
+        50% { left: 100%; }
+        100% { left: 100%; }
+    }
+
+    @keyframes progressShimmer {
+        0% { left: -100%; }
+        100% { left: 100%; }
+    }
+
+    @keyframes shake {
+        0%, 100% { transform: translateX(0); }
+        25% { transform: translateX(-2px); }
+        75% { transform: translateX(2px); }
+    }
+
+    @keyframes flash {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.5; }
     }
 
     /* Content styles */
@@ -269,21 +411,23 @@ class ResourceLoader {
         const preloader = document.getElementById('preloader');
         if (!preloader) return;
 
-        // Находим место после логотипа
-        const logoContainer = preloader.querySelector('.logo-container');
-        
-        const resourcesList = document.createElement('div');
-        resourcesList.className = 'resources-list';
-        resourcesList.innerHTML = `
-            <div class="resources-title">Loading Resources</div>
-            <div class="resources-items"></div>
+        // Создаем золотую консоль
+        const resourcesConsole = document.createElement('div');
+        resourcesConsole.className = 'resources-console';
+        resourcesConsole.innerHTML = `
+            <div class="console-header">
+                <div class="console-icon"></div>
+                <div class="console-title">System Resources</div>
+                <div class="console-icon"></div>
+            </div>
+            <div class="resources-list"></div>
             <div class="overall-progress">
                 <div class="progress-bar"></div>
             </div>
-            <div class="status-text">Establishing secure connection...</div>
+            <div class="console-status">Establishing secure connection...</div>
         `;
 
-        const resourcesItems = resourcesList.querySelector('.resources-items');
+        const resourcesList = resourcesConsole.querySelector('.resources-list');
         
         this.resources.forEach((resource, index) => {
             const item = document.createElement('div');
@@ -291,19 +435,21 @@ class ResourceLoader {
             item.setAttribute('data-index', index);
             
             item.innerHTML = `
-                <div class="resource-icon pending">•</div>
+                <div class="resource-icon pending">⦿</div>
                 <div class="resource-name">${resource.name}</div>
-                <div class="resource-time">-</div>
+                <div class="resource-time">--</div>
             `;
             
-            resourcesItems.appendChild(item);
+            resourcesList.appendChild(item);
         });
 
-        preloader.appendChild(resourcesList);
+        // Добавляем консоль в preloader
+        preloader.appendChild(resourcesConsole);
         
+        this.resourcesConsole = resourcesConsole;
         this.resourcesList = resourcesList;
-        this.progressBar = resourcesList.querySelector('.progress-bar');
-        this.statusText = resourcesList.querySelector('.status-text');
+        this.progressBar = resourcesConsole.querySelector('.progress-bar');
+        this.statusText = resourcesConsole.querySelector('.console-status');
     }
 
     updateResourceStatus(index, status, time = null) {
@@ -318,7 +464,7 @@ class ResourceLoader {
         
         switch(status) {
             case 'loading':
-                icon.textContent = '↻';
+                icon.textContent = '⟳';
                 break;
             case 'success':
                 icon.textContent = '✓';
@@ -329,7 +475,7 @@ class ResourceLoader {
                 this.completed++;
                 break;
             case 'timeout':
-                icon.textContent = '⏱';
+                icon.textContent = '⧖';
                 this.completed++;
                 break;
         }
@@ -345,8 +491,20 @@ class ResourceLoader {
         const progress = (this.completed / this.total) * 100;
         this.progressBar.style.width = progress + '%';
         
-        if (this.completed === this.total) {
-            this.statusText.textContent = 'Resources loaded. Initializing...';
+        // Обновляем статус консоли
+        const successful = this.resources.filter((_, i) => 
+            this.resourcesList.querySelector(`[data-index="${i}"]`)?.classList.contains('success')).length;
+        const failed = this.resources.filter((_, i) => 
+            this.resourcesList.querySelector(`[data-index="${i}"]`)?.classList.contains('error') ||
+            this.resourcesList.querySelector(`[data-index="${i}"]`)?.classList.contains('timeout')).length;
+            
+        if (this.completed < this.total) {
+            this.statusText.textContent = `Loading resources... ${successful}/${this.total} ready`;
+        } else if (failed > 0) {
+            this.statusText.textContent = `Resources loaded with ${failed} error(s). Proceeding...`;
+            setTimeout(() => this.finishLoading(), 800);
+        } else {
+            this.statusText.textContent = 'All resources loaded successfully. Initializing...';
             setTimeout(() => this.finishLoading(), 500);
         }
     }
@@ -487,36 +645,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 <!-- Tailwind loading moved to ResourceLoader class -->
 
-<script>
-  const cdnList = [
-    "https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js",
-    "https://unpkg.com/qrcodejs@1.0.0/qrcode.min.js",
-    "https://raw.githubusercontent.com/davidshimjs/qrcodejs/master/qrcode.min.js"
-  ];
-
-  let index = 0;
-
-  function tryLoadScript() {
-    if (index >= cdnList.length) {
-      console.error("❌ Не удалось загрузить qrcode.min.js ни с одного источника.");
-      return;
-    }
-
-    const script = document.createElement("script");
-    script.src = cdnList[index];
-    script.onload = () => {
-      console.log(`✅ qrcode.min.js успешно загружен с: ${cdnList[index]}`);
-    };
-    script.onerror = () => {
-      console.warn(`⚠️ Ошибка загрузки ${cdnList[index]}, пробую следующий...`);
-      index++;
-      tryLoadScript();
-    };
-    document.head.appendChild(script);
-  }
-
-  tryLoadScript();
-</script>
+<!-- QRCode loading moved to ResourceLoader class -->
 
 
 <style>
@@ -3530,11 +3659,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 1000);
     });
 </script>
-    <script type="module" defer>
-        // Fix flags emoji in some browsers on Windows
-        import { polyfillCountryFlagEmojis } from "https://cdn.skypack.dev/country-flag-emoji-polyfill";
-        polyfillCountryFlagEmojis();
-    </script>
+    <!-- Emoji polyfill moved to ResourceLoader class -->
     <script>
     window.addEventListener('load', () => {
       // 1) Ждём загрузки всех web-шрифтов (иконок тоже)
