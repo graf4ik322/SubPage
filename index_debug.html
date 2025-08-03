@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#EADDFF" id="theme-color-meta">
+    <title id="page-title">Subscription Debug</title>
+
+<!-- Добавляем стили для отладочного лога -->
+<style>
+#debug-log {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 300px;
+    height: 100vh;
+    background: rgba(0,0,0,0.9);
+    color: white;
+    font-family: monospace;
+    font-size: 10px;
+    padding: 10px;
+    overflow-y: auto;
+    z-index: 10000;
+    border-left: 2px solid #333;
+}
+.debug-log-item {
+    margin: 2px 0;
+    padding: 2px;
+}
+.debug-success { color: #0f0; }
+.debug-error { color: #f00; }
+.debug-timeout { color: #fa0; }
+.debug-pending { color: #ff0; }
+</style>
+
+<script>
+// Создаем отладочный лог
+document.addEventListener('DOMContentLoaded', function() {
+    const debugLog = document.createElement('div');
+    debugLog.id = 'debug-log';
+    debugLog.innerHTML = '<h4>Resource Loading Debug</h4>';
+    document.body.appendChild(debugLog);
+    
+    window.debugLog = function(message, type = 'pending') {
+        const item = document.createElement('div');
+        item.className = `debug-log-item debug-${type}`;
+        item.innerHTML = `[${new Date().toLocaleTimeString()}] ${message}`;
+        debugLog.appendChild(item);
+        debugLog.scrollTop = debugLog.scrollHeight;
+        console.log(`DEBUG ${type.toUpperCase()}: ${message}`);
+    };
+    
+    debugLog('Debug mode activated', 'success');
+});
+
+// Оригинальные скрипты загрузки шрифтов с логированием
+const fontLinks = [
+    {
+      name: "Inter",
+      urls: [
+        "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap",
+        "https://fonts.font.im/css2?family=Inter:wght@400;500;700&display=swap",
+        "https://fonts.w.tools/css2?family=Inter:wght@400;500;700&display=swap"
+      ]
+    },
+    {
+      name: "Material Symbols Outlined",
+      urls: [
+        "https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200",
+        "https://fonts.font.im/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200",
+        "https://fonts.w.tools/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+      ]
+    }
+];
+
+fontLinks.forEach(font => {
+    let index = 0;
+
+    const tryLoad = () => {
+        if (index >= font.urls.length) {
+            window.debugLog && debugLog(`❌ Не удалось загрузить шрифт "${font.name}" ни с одного CDN`, 'error');
+            return;
+        }
+
+        const url = font.urls[index];
+        window.debugLog && debugLog(`Пробую загрузить ${font.name} с ${url}`, 'pending');
+
+        const link = document.createElement("link");
+        link.rel = "stylesheet";
+        link.href = url;
+
+        // Таймаут для отслеживания зависших загрузок
+        const timeout = setTimeout(() => {
+            window.debugLog && debugLog(`⏱️ TIMEOUT ${font.name}: ${url} (10 сек)`, 'timeout');
+            index++;
+            tryLoad();
+        }, 10000);
+
+        link.onload = () => {
+            clearTimeout(timeout);
+            window.debugLog && debugLog(`✅ ${font.name} успешно загружен с: ${url}`, 'success');
+        };
+
+        link.onerror = () => {
+            clearTimeout(timeout);
+            window.debugLog && debugLog(`⚠️ ${font.name}: ошибка загрузки ${url}`, 'error');
+            index++;
+            tryLoad();
+        };
+
+        document.head.appendChild(link);
+    };
+
+    tryLoad();
+});
+</script>
+
+<script>
+// Tailwind CSS с логированием
+const cdns = [
+    "https://cdn.tailwindcss.com",
+    "https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4",
+    "https://unpkg.com/@tailwindcss/browser@4"
+];
+
+function loadScript(src, onSuccess, onError) {
+    window.debugLog && debugLog(`Загружаю Tailwind: ${src}`, 'pending');
+    const script = document.createElement("script");
+    script.src = src;
+
+    // Таймаут для Tailwind
+    const timeout = setTimeout(() => {
+        window.debugLog && debugLog(`⏱️ TIMEOUT Tailwind: ${src} (15 сек)`, 'timeout');
+        onError();
+    }, 15000);
+
+    script.onload = () => {
+        clearTimeout(timeout);
+        window.debugLog && debugLog(`✅ Tailwind загружен с: ${src}`, 'success');
+        onSuccess();
+    };
+
+    script.onerror = () => {
+        clearTimeout(timeout);
+        window.debugLog && debugLog(`❌ Ошибка Tailwind: ${src}`, 'error');
+        onError();
+    };
+
+    document.head.appendChild(script);
+}
+
+function tryLoadCDNs(index = 0) {
+    if (index >= cdns.length) {
+        window.debugLog && debugLog("❌ Не удалось загрузить Tailwind с любого CDN", 'error');
+        return;
+    }
+    loadScript(
+        cdns[index],
+        () => {}, // success
+        () => {
+            window.debugLog && debugLog(`Пробую следующий CDN Tailwind...`, 'pending');
+            tryLoadCDNs(index + 1);
+        }
+    );
+}
+
+tryLoadCDNs();
+</script>
+
+<script>
+// QRCode библиотека с логированием
+const cdnList = [
+    "https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js",
+    "https://unpkg.com/qrcodejs@1.0.0/qrcode.min.js",
+    "https://raw.githubusercontent.com/davidshimjs/qrcodejs/master/qrcode.min.js"
+];
+
+let index = 0;
+
+function tryLoadScript() {
+    if (index >= cdnList.length) {
+        window.debugLog && debugLog("❌ Не удалось загрузить qrcode.min.js ни с одного источника", 'error');
+        return;
+    }
+
+    const url = cdnList[index];
+    window.debugLog && debugLog(`Загружаю QRCode: ${url}`, 'pending');
+
+    const script = document.createElement("script");
+    script.src = url;
+
+    // Таймаут для QRCode
+    const timeout = setTimeout(() => {
+        window.debugLog && debugLog(`⏱️ TIMEOUT QRCode: ${url} (10 сек)`, 'timeout');
+        index++;
+        tryLoadScript();
+    }, 10000);
+
+    script.onload = () => {
+        clearTimeout(timeout);
+        window.debugLog && debugLog(`✅ qrcode.min.js успешно загружен с: ${url}`, 'success');
+    };
+
+    script.onerror = () => {
+        clearTimeout(timeout);
+        window.debugLog && debugLog(`❌ Ошибка загрузки QRCode: ${url}`, 'error');
+        index++;
+        tryLoadScript();
+    };
+
+    document.head.appendChild(script);
+}
+
+tryLoadScript();
+</script>
+
+<!-- Остальные стили из оригинального файла (сокращено для примера) -->
+<style>
+body {
+    font-family: 'Inter', sans-serif;
+    transition: background-color 0.3s, color 0.3s;
+    background-color: #121212;
+    color: #E8F5E8;
+}
+#preloader {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: #0a0a0a;
+    z-index: 9999;
+    gap: 2rem;
+}
+</style>
+
+</head>
+<body data-theme="evergreen-dark">
+
+<!-- Preloader --> 
+<div id="preloader">
+    <div class="logo-container">
+        <div class="logo-wrapper">
+            <img src="https://edencore.cc/src/logoloader.png" alt="Eden Core VPN" class="logo-image" 
+                 onload="debugLog && debugLog('✅ Логотип загружен', 'success')" 
+                 onerror="debugLog && debugLog('❌ Ошибка загрузки логотипа', 'error')">
+        </div>
+    </div>
+    <div class="progress"></div>
+    <div class="status">Establishing secure connection...</div>
+</div>
+
+<div id="content" style="display: none;">
+    <h1>Debug версия сайта</h1>
+    <p>Проверьте отладочный лог справа для диагностики проблем с загрузкой ресурсов.</p>
+</div>
+
+<script type="module" defer>
+    // Emoji polyfill с логированием
+    try {
+        window.debugLog && debugLog('Загружаю emoji polyfill...', 'pending');
+        const { polyfillCountryFlagEmojis } = await import("https://cdn.skypack.dev/country-flag-emoji-polyfill");
+        polyfillCountryFlagEmojis();
+        window.debugLog && debugLog('✅ Emoji polyfill загружен', 'success');
+    } catch (error) {
+        window.debugLog && debugLog(`❌ Ошибка emoji polyfill: ${error.message}`, 'error');
+    }
+</script>
+
+<script>
+// Ждем загрузки всех ресурсов
+window.addEventListener('load', () => {
+    window.debugLog && debugLog('Window load event fired', 'success');
+    
+    document.fonts.ready.then(() => {
+        window.debugLog && debugLog('Все шрифты загружены', 'success');
+        
+        requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+                const pre = document.getElementById('preloader');
+                const content = document.getElementById('content');
+                
+                if (pre) {
+                    window.debugLog && debugLog('Скрываю preloader', 'success');
+                    pre.style.transition = 'opacity 0.6s ease';
+                    pre.style.opacity = '0';
+                }
+                
+                setTimeout(() => {
+                    if (pre) pre.remove();
+                    if (content) {
+                        content.style.display = 'block';
+                        content.style.opacity = '1';
+                    }
+                    window.debugLog && debugLog('Контент показан', 'success');
+                    document.body.style.overflow = 'auto';
+                }, 600);
+            });
+        });
+    }).catch(error => {
+        window.debugLog && debugLog(`❌ Ошибка загрузки шрифтов: ${error.message}`, 'error');
+    });
+});
+
+// Проверяем, что вызывает зависание
+setTimeout(() => {
+    window.debugLog && debugLog('Проверка через 30 сек - preloader все еще виден?', 'pending');
+    const preloader = document.getElementById('preloader');
+    if (preloader && preloader.style.opacity !== '0') {
+        window.debugLog && debugLog('⚠️ ПРОБЛЕМА: Preloader все еще виден через 30 сек!', 'error');
+    }
+}, 30000);
+</script>
+
+</body>
+</html>

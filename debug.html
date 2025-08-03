@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug - Resource Loading</title>
+    <style>
+        body { font-family: monospace; padding: 20px; }
+        .log { margin: 5px 0; padding: 10px; border-left: 3px solid #ccc; }
+        .success { border-color: green; background: #f0fff0; }
+        .error { border-color: red; background: #fff0f0; }
+        .pending { border-color: orange; background: #fff8f0; }
+        .timeout { border-color: purple; background: #f8f0ff; }
+    </style>
+</head>
+<body>
+    <h1>Диагностика загрузки ресурсов</h1>
+    <div id="logs"></div>
+
+    <script>
+    const logs = document.getElementById('logs');
+    
+    function addLog(message, type = 'pending') {
+        const div = document.createElement('div');
+        div.className = `log ${type}`;
+        div.innerHTML = `<strong>${new Date().toLocaleTimeString()}</strong> - ${message}`;
+        logs.appendChild(div);
+        console.log(`${type.toUpperCase()}: ${message}`);
+        return div;
+    }
+
+    // Тестируем все ресурсы из вашего HTML
+    const resources = [
+        // Google Fonts
+        { name: 'Google Fonts Inter', url: 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap' },
+        { name: 'Google Fonts Material Icons', url: 'https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200' },
+        
+        // Fallback CDNs
+        { name: 'Font.im Inter', url: 'https://fonts.font.im/css2?family=Inter:wght@400;500;700&display=swap' },
+        { name: 'Font.im Material Icons', url: 'https://fonts.font.im/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200' },
+        
+        // Tailwind CSS
+        { name: 'Tailwind CDN', url: 'https://cdn.tailwindcss.com' },
+        { name: 'JSDelivr Tailwind', url: 'https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4' },
+        { name: 'Unpkg Tailwind', url: 'https://unpkg.com/@tailwindcss/browser@4' },
+        
+        // QRCode library
+        { name: 'JSDelivr QRCode', url: 'https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js' },
+        { name: 'Unpkg QRCode', url: 'https://unpkg.com/qrcodejs@1.0.0/qrcode.min.js' },
+        { name: 'GitHub QRCode', url: 'https://raw.githubusercontent.com/davidshimjs/qrcodejs/master/qrcode.min.js' },
+        
+        // Emoji polyfill
+        { name: 'Skypack Emoji Polyfill', url: 'https://cdn.skypack.dev/country-flag-emoji-polyfill' },
+        
+        // Logo
+        { name: 'Logo Image', url: 'https://edencore.cc/src/logoloader.png' }
+    ];
+
+    async function testResource(resource) {
+        const logDiv = addLog(`Тестирую ${resource.name}...`, 'pending');
+        
+        try {
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => {
+                controller.abort();
+                logDiv.className = 'log timeout';
+                logDiv.innerHTML = `<strong>${new Date().toLocaleTimeString()}</strong> - ⏱️ TIMEOUT: ${resource.name} (превышен лимит 10 сек)`;
+            }, 10000); // 10 секунд таймаут
+
+            const response = await fetch(resource.url, {
+                method: 'HEAD',
+                signal: controller.signal,
+                mode: 'no-cors' // Избегаем CORS ошибок
+            });
+            
+            clearTimeout(timeoutId);
+            logDiv.className = 'log success';
+            logDiv.innerHTML = `<strong>${new Date().toLocaleTimeString()}</strong> - ✅ OK: ${resource.name}`;
+            
+        } catch (error) {
+            logDiv.className = 'log error';
+            if (error.name === 'AbortError') {
+                logDiv.innerHTML = `<strong>${new Date().toLocaleTimeString()}</strong> - ⏱️ TIMEOUT: ${resource.name} (превышен лимит времени)`;
+            } else {
+                logDiv.innerHTML = `<strong>${new Date().toLocaleTimeString()}</strong> - ❌ ERROR: ${resource.name} - ${error.message}`;
+            }
+        }
+    }
+
+    // Запускаем тесты параллельно
+    addLog('Начинаю тестирование всех ресурсов...', 'pending');
+    
+    Promise.all(resources.map(resource => testResource(resource))).then(() => {
+        addLog('Тестирование завершено!', 'success');
+    });
+
+    // Дополнительно тестируем загрузку CSS и JS
+    function testCSSLoad(url, name) {
+        const logDiv = addLog(`Тестирую загрузку CSS: ${name}...`, 'pending');
+        const link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.href = url;
+        
+        const timeout = setTimeout(() => {
+            logDiv.className = 'log timeout';
+            logDiv.innerHTML = `<strong>${new Date().toLocaleTimeString()}</strong> - ⏱️ CSS TIMEOUT: ${name}`;
+        }, 10000);
+
+        link.onload = () => {
+            clearTimeout(timeout);
+            logDiv.className = 'log success';
+            logDiv.innerHTML = `<strong>${new Date().toLocaleTimeString()}</strong> - ✅ CSS OK: ${name}`;
+        };
+
+        link.onerror = () => {
+            clearTimeout(timeout);
+            logDiv.className = 'log error';
+            logDiv.innerHTML = `<strong>${new Date().toLocaleTimeString()}</strong> - ❌ CSS ERROR: ${name}`;
+        };
+
+        document.head.appendChild(link);
+    }
+
+    function testJSLoad(url, name) {
+        const logDiv = addLog(`Тестирую загрузку JS: ${name}...`, 'pending');
+        const script = document.createElement('script');
+        script.src = url;
+        
+        const timeout = setTimeout(() => {
+            logDiv.className = 'log timeout';
+            logDiv.innerHTML = `<strong>${new Date().toLocaleTimeString()}</strong> - ⏱️ JS TIMEOUT: ${name}`;
+        }, 10000);
+
+        script.onload = () => {
+            clearTimeout(timeout);
+            logDiv.className = 'log success';
+            logDiv.innerHTML = `<strong>${new Date().toLocaleTimeString()}</strong> - ✅ JS OK: ${name}`;
+        };
+
+        script.onerror = () => {
+            clearTimeout(timeout);
+            logDiv.className = 'log error';
+            logDiv.innerHTML = `<strong>${new Date().toLocaleTimeString()}</strong> - ❌ JS ERROR: ${name}`;
+        };
+
+        document.head.appendChild(script);
+    }
+
+    // Тестируем CSS
+    setTimeout(() => {
+        testCSSLoad('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap', 'Google Fonts Inter CSS');
+        testCSSLoad('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200', 'Google Fonts Material Icons CSS');
+    }, 1000);
+
+    // Тестируем JS
+    setTimeout(() => {
+        testJSLoad('https://cdn.tailwindcss.com', 'Tailwind CSS JS');
+        testJSLoad('https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js', 'QRCode JS');
+    }, 2000);
+
+    </script>
+</body>
+</html>
