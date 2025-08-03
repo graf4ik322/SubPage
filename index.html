@@ -654,19 +654,16 @@ class ResourceLoader {
     }
 
     finishLoading() {
-        // Минимальная задержка 3 секунды для демонстрации терминала
-        const minDisplayTime = 3000;
-        const loadEndTime = Date.now();
-        const elapsedTime = loadEndTime - this.startTime;
-        const remainingTime = Math.max(0, minDisplayTime - elapsedTime);
-        
-        setTimeout(() => {
-            // Запускаем 3-секундную анимацию инициализации
-            this.startInitializationAnimation();
-        }, remainingTime);
+        // Сразу запускаем анимацию инициализации
+        // Минимальное время будет обеспечено самой анимацией
+        this.startInitializationAnimation();
     }
 
     async startInitializationAnimation() {
+        // Запоминаем время начала анимации
+        const animationStartTime = Date.now();
+        const minAnimationTime = 3000; // Минимум 3 секунды
+        
         // Определяем язык пользователя
         const userLang = navigator.language || navigator.userLanguage;
         const isRussian = userLang.startsWith('ru');
@@ -674,16 +671,10 @@ class ResourceLoader {
         const initMessages = isRussian ? [
             'Инициализация Eden Core VPN...',
             'Загрузка протоколов безопасности...',
-            'Установка зашифрованного туннеля...',
-            'Настройка сетевых интерфейсов...',
-            'Запуск VPN сервисов...',
             'Система готова к работе!'
         ] : [
             'Initializing Eden Core VPN...',
             'Loading security protocols...',
-            'Establishing encrypted tunnel...',
-            'Configuring network interfaces...',
-            'Starting VPN services...',
             'System initialization complete!'
         ];
 
@@ -695,20 +686,28 @@ class ResourceLoader {
         
         // Последовательно печатаем каждое сообщение инициализации
         for (let i = 0; i < initMessages.length; i++) {
-            await this.typeText(this.statusText, initMessages[i], 70);
+            await this.typeText(this.statusText, initMessages[i], 50);
             
             // Добавляем точки для эффекта "обработки" (кроме последнего сообщения)
             if (i < initMessages.length - 1) {
                 await this.addProcessingDots();
-                await new Promise(resolve => setTimeout(resolve, 900));
+                await new Promise(resolve => setTimeout(resolve, 400));
             }
         }
 
         // Финальная пауза перед запуском приложения
-        await new Promise(resolve => setTimeout(resolve, 2000));
+        await new Promise(resolve => setTimeout(resolve, 1000));
         
         // Добавляем эффект мигания для последнего сообщения
         await this.addBlinkingEffect();
+        
+        // Проверяем, прошло ли минимум 3 секунды
+        const elapsedTime = Date.now() - animationStartTime;
+        const remainingTime = Math.max(0, minAnimationTime - elapsedTime);
+        
+        if (remainingTime > 0) {
+            await new Promise(resolve => setTimeout(resolve, remainingTime));
+        }
         
         // Запускаем финальную анимацию перехода
         this.startFinalTransition();
@@ -720,20 +719,20 @@ class ResourceLoader {
         const isRussian = userLang.startsWith('ru');
         const loadingText = isRussian ? 'Загрузка' : 'Loading';
         
-        for (let i = 0; i < 20; i++) {
+        for (let i = 0; i < 10; i++) {
             this.statusText.textContent = `${loadingText} ${loadingTexts[i % loadingTexts.length]}`;
-            await new Promise(resolve => setTimeout(resolve, 120));
+            await new Promise(resolve => setTimeout(resolve, 100));
         }
         this.statusText.textContent = '';
     }
 
     async addBlinkingEffect() {
         const currentText = this.statusText.textContent;
-        for (let i = 0; i < 6; i++) {
+        for (let i = 0; i < 4; i++) {
             this.statusText.textContent = currentText;
-            await new Promise(resolve => setTimeout(resolve, 400));
+            await new Promise(resolve => setTimeout(resolve, 300));
             this.statusText.textContent = '';
-            await new Promise(resolve => setTimeout(resolve, 200));
+            await new Promise(resolve => setTimeout(resolve, 150));
         }
         this.statusText.textContent = currentText;
     }
