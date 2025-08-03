@@ -659,12 +659,12 @@ class ResourceLoader {
         
         // Последовательно печатаем каждое сообщение инициализации
         for (let i = 0; i < initMessages.length; i++) {
-            await this.typeText(this.statusText, initMessages[i], 60);
+            await this.typeText(this.statusText, initMessages[i], 30);
             
             // Добавляем точки для эффекта "обработки" (кроме последнего сообщения)
             if (i < initMessages.length - 1) {
                 await this.addProcessingDots();
-                await new Promise(resolve => setTimeout(resolve, 600));
+                await new Promise(resolve => setTimeout(resolve, 400));
             }
         }
 
@@ -701,7 +701,7 @@ class ResourceLoader {
 
     async addBlinkingEffect() {
         const currentText = this.statusText.textContent;
-        for (let i = 0; i < 6; i++) {
+        for (let i = 0; i < 3; i++) {
             this.statusText.textContent = currentText;
             await new Promise(resolve => setTimeout(resolve, 400));
             this.statusText.textContent = '';
