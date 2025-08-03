@@ -990,6 +990,103 @@ document.addEventListener('DOMContentLoaded', () => {
             --color-outline-variant: #2C2C2C;
             --color-scrim: #000000;
         }
+
+        /* Signature (Фирменная) Palette */
+        [data-theme="signature-light"] {
+            /* Primary - Элегантный темно-серый для контраста */
+            --color-primary: #2C2C2C;
+            --color-on-primary: #FFFFFF;
+            --color-primary-container: #F5F5F5;
+            --color-on-primary-container: #1A1A1A;
+
+            /* Secondary - Благородный серый */
+            --color-secondary: #4A4A4A;
+            --color-on-secondary: #FFFFFF;
+            --color-secondary-container: #E8E8E8;
+            --color-on-secondary-container: #1C1C1C;
+
+            /* Tertiary - Утонченный теплый серый */
+            --color-tertiary: #6D6D6D;
+            --color-on-tertiary: #FFFFFF;
+            --color-tertiary-container: #EEEEEE;
+            --color-on-tertiary-container: #252525;
+
+            /* Error - Элегантный красный */
+            --color-error: #C62828;
+            --color-on-error: #FFFFFF;
+            --color-error-container: #FFEBEE;
+            --color-on-error-container: #370000;
+
+            /* Surface - Премиальные светлые тона */
+            --color-background: #FAFAFA;
+            --color-on-background: #1A1A1A;
+            --color-surface: #FFFFFF;
+            --color-on-surface: #1A1A1A;
+            --color-surface-variant: #F2F2F2;
+            --color-on-surface-variant: #424242;
+
+            /* Outline - Деликатные границы */
+            --color-outline: #BDBDBD;
+            --color-outline-variant: #E0E0E0;
+
+            /* Inverse - Контрастная инверсия */
+            --color-inverse-on-surface: #F5F5F5;
+            --color-inverse-surface: #2C2C2C;
+            --color-inverse-primary: #E0E0E0;
+
+            /* Utility - Тонкие акценты */
+            --color-shadow: #000000;
+            --color-surface-tint: #2C2C2C;
+            --color-scrim: #000000;
+        }
+
+        [data-theme="signature-dark"] {
+            /* Primary - Фирменный белый на черном */
+            --color-primary: #FFFFFF;
+            --color-on-primary: #000000;
+            --color-primary-container: #1A1A1A;
+            --color-on-primary-container: #E8E8E8;
+
+            /* Secondary - Премиальный серый */
+            --color-secondary: #E0E0E0;
+            --color-on-secondary: #121212;
+            --color-secondary-container: #2A2A2A;
+            --color-on-secondary-container: #F0F0F0;
+
+            /* Tertiary - Роскошный светло-серый */
+            --color-tertiary: #CCCCCC;
+            --color-on-tertiary: #1A1A1A;
+            --color-tertiary-container: #333333;
+            --color-on-tertiary-container: #E8E8E8;
+
+            /* Error - Стильный красный для темной темы */
+            --color-error: #FF5252;
+            --color-on-error: #000000;
+            --color-error-container: #8C1D18;
+            --color-on-error-container: #FFCDD2;
+
+            /* Surface - Глубокий черный фирменный */
+            --color-background: #000000;
+            --color-on-background: #FFFFFF;
+            --color-surface: #0A0A0A;
+            --color-on-surface: #FFFFFF;
+            --color-surface-variant: #1C1C1C;
+            --color-on-surface-variant: #CCCCCC;
+
+            /* Outline - Тонкие серые линии */
+            --color-outline: #424242;
+            --color-outline-variant: #2C2C2C;
+
+            /* Inverse - Элегантная инверсия */
+            --color-inverse-on-surface: #000000;
+            --color-inverse-surface: #FFFFFF;
+            --color-inverse-primary: #2C2C2C;
+
+            /* Utility - Классические акценты */
+            --color-shadow: #000000;
+            --color-surface-tint: #FFFFFF;
+            --color-scrim: #000000;
+        }
      
         /* AppBar - верхняя панель */
         .appbar {
@@ -2143,7 +2240,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   </style>
 </head>
-<body data-theme="evergreen-dark"> 
+<body data-theme="signature-dark"> 
 
 <!-- Preloader --> 
 <div id="preloader">
@@ -2344,8 +2441,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     <span class="material-symbols-outlined">palette</span>
                     <span data-i18n="minimal_theme">Minimal</span>
                 </button>
-                
-                
+                <button class="settings-radio-btn" data-palette="signature" onclick="selectPalette('signature')">
+                    <span class="material-symbols-outlined">palette</span>
+                    <span data-i18n="signature_theme">Signature</span>
+                </button>
                 
             </div>
         </div>
@@ -2387,7 +2486,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let appsConfig = null; // Глобальная переменная для конфигурации
 
     // Список доступных палитр
-    const availablePalettes = ['evergreen','cybertech', 'cosmos','minimal'];
+    const availablePalettes = ['evergreen','cybertech', 'cosmos','minimal','signature'];
 
     // Функция для случайного выбора палитры
     function getRandomPalette() {
@@ -2527,6 +2626,7 @@ document.addEventListener('DOMContentLoaded', () => {
             minimal_theme: 'Minimal',
             evergreen_theme: 'Evergreen',
             cybertech_theme: 'CyberTech',
+            signature_theme: 'Signature',
             add_subscription: 'Добавить подписку',
             download_app: 'Скачать приложение',
             unlimited: 'Без лимита',
@@ -2579,6 +2679,7 @@ document.addEventListener('DOMContentLoaded', () => {
             minimal_theme: 'Minimal',
             evergreen_theme: 'Evergreen',
             cybertech_theme: 'CyberTech',
+            signature_theme: 'Signature',
             add_subscription: 'Add subscription',
             download_app: 'Download app',
             unlimited: 'Unlimited',
@@ -2636,8 +2737,8 @@ document.addEventListener('DOMContentLoaded', () => {
             currentTheme = theme;
             currentBrightness = brightness;
         } else {
-            // Случайный выбор палитры при первом запуске
-            currentTheme = getRandomPalette();
+            // Фирменная тема по умолчанию при первом запуске
+            currentTheme = 'signature';
             currentBrightness = 'auto';
         }
 
@@ -3605,9 +3706,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 'cosmos-light': '#E1DFF5',
                 'cosmos-dark': '#423D6C',
                 'cybertech-light': '#E3F2FD',
-                'minimal-light': 'E0E0E0',
-                'minimal-dark': '424242',
-                'cybertech-dark':'#0D47A1'
+                'minimal-light': '#E0E0E0',
+                'minimal-dark': '#424242',
+                'cybertech-dark': '#0D47A1',
+                'signature-light': '#F5F5F5',
+                'signature-dark': '#1A1A1A'
             };
             
             const currentThemeKey = `${currentTheme}-${actualBrightness}`;
